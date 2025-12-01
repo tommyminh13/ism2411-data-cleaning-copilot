@@ -7,5 +7,26 @@ It demonstrates data cleaning and responsible use of GitHub Copilot.
 
 import pandas as pd
 
+# This function loads the CSV file and returns a DataFrame.
+def load_data(file_path: str) -> pd.DataFrame:
+    try:
+        df = pd.read_csv(file_path)
+        print("Loaded file successfully.")
+        return df
+    except FileNotFoundError:
+        print("File not found:", file_path)
+        raise
+
+# This function cleans and standardizes column names.
+def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
+    df.columns = (
+        df.columns
+        .str.strip()
+        .str.lower()
+        .str.replace(" ", "_")
+        .str.replace("-", "_")
+    )
+    return df
+
 
 
