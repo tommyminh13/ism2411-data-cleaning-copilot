@@ -28,5 +28,16 @@ def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
     )
     return df
 
+# This function handles missing values in the DataFrame.
+def handle_missing_values(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.dropna(subset=["price", "quantity"])
+    return df
+
+# This function add invalid row removal function.
+def remove_invalid_rows(df: pd.DataFrame) -> pd.DataFrame:
+    df = df[df["price"] >= 0]
+    df = df[df["quantity"] >= 0]
+    return df
+
 
 
