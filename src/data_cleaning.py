@@ -30,14 +30,36 @@ def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
 
 # This function handles missing values in the DataFrame.
 def handle_missing_values(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.dropna(subset=["price", "quantity"])
+    df = df.dropna(subset=["price", "qty"])
     return df
 
 # This function add invalid row removal function.
 def remove_invalid_rows(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df["price"] >= 0]
-    df = df[df["quantity"] >= 0]
+    df = df[df["qty"] >= 0]
     return df
 
+# Add the Required Main Block
+if __name__ == "__main__":
+    raw_path = "data/raw/sales_data_raw.csv"
+    cleaned_path = "data/processed/sales_data_clean.csv"
 
+    df_raw = load_data(raw_path)
+    df_clean = clean_column_names(df_raw)
 
+    # Convert numeric columns (price, qty)
+    df_clean["price"] = pd.to_numeric(df_clean["price"], errors="coerce")
+    df_clean["qty"] = pd.to_numeric(df_clean["qty"], errors="coerce")
+
+    # Strip whitespace from strings
+    for col in df_clean.columns:
+        if df_clean[col].dtype == "object":
+            df_clean[col] = df_clean[col].str.strip()
+
+    df_clean = handle_missing_values(df_clean)
+    df_clean = remove_invalid_rows(df_clean)
+
+    df_clean.to_csv(cleaned_path, index=False)
+
+    print("Cleaning complete. First few rows:")
+    print(df_clean.head())
